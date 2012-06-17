@@ -31,12 +31,12 @@
     }
   });
 
-  test("gotoState with implied save - call callback", function() {
+  test("startState with implied save - call callback", function() {
     var state = new Callback();
 
     // Call the state callback with the string passed as the first argument
     // to the callback.
-    stateMachine.gotoState(state, "argument");
+    stateMachine.startState(state, "argument");
 
     equal(state.called, 1, "state called");
     equal(state.args[0], "argument", "argument passed to state callback as first argument");
@@ -46,14 +46,14 @@
     var origState = new Callback();
 
     // run the original state.
-    stateMachine.gotoState(origState);
+    stateMachine.startState(origState);
 
     // store a momento on the object.  When state called again after popState,
     // momento is passed to callback as second argument.
     stateMachine.storeMomento("momento");
 
     // goto a new state, saves origState for when the next popState occurs.
-    stateMachine.gotoState(new Callback());
+    stateMachine.startState(new Callback());
 
     // pop an item off the stack and return to the previous state.
     stateMachine.popState();
@@ -62,38 +62,38 @@
     equal(origState.args[1], "momento", "momento passed to state callback as second argument");
   });
 
-  test("gotoState with explicit save=false - do not save to stack", function() {
+  test("startState with explicit savable=false - do not save to stack", function() {
     var savedState = new Callback(),
         notSavedState = new Callback();
 
-    stateMachine.gotoState(savedState);
+    stateMachine.startState(savedState);
 
     // This will not go on the stack when the next state is added.
-    stateMachine.gotoState(false, notSavedState);
+    stateMachine.startState(false, notSavedState);
 
     // This will never go on the stack.
-    stateMachine.gotoState(new Callback());
+    stateMachine.startState(new Callback());
 
     // This should go back to savedState
     stateMachine.popState();
 
-    equal(notSavedState.called, 1, "notSavedState only called once for gotoState");
-    equal(savedState.called, 2, "origState called twice, middle state not saved");
+    equal(notSavedState.called, 1, "notSavedState only called once for startState");
+    equal(savedState.called, 2, "origState called twice, notSavedState was not saved");
   });
 
-  test("multiple calls to gotoState save states to stack correctly", function() {
+  test("multiple calls to startState save states to stack correctly", function() {
     var state = new Callback();
 
-    stateMachine.gotoState(state);
+    stateMachine.startState(state);
 
     // First item should go on stack.
-    stateMachine.gotoState(function() {});
+    stateMachine.startState(function() {});
 
     // Original state should be run, no items on stack.
     stateMachine.popState();
 
     // original state on stack.
-    stateMachine.gotoState(function() {});
+    stateMachine.startState(function() {});
 
     // After this, no items should be on stack, first item should be run.
     stateMachine.popState();
@@ -106,13 +106,13 @@
         replacementState = new Callback();
 
     // Original state.
-    stateMachine.gotoState(origState);
+    stateMachine.startState(origState);
 
     // replace the original state on the stack.
     stateMachine.replaceState(replacementState);
 
     // Add a new state so we can call popState.
-    stateMachine.gotoState(new Callback());
+    stateMachine.startState(new Callback());
 
     // This goes back to the replacementState.
     stateMachine.popState();
@@ -121,22 +121,22 @@
     equal(replacementState.called, 2, "replacement called twice");
   });
 
-  test("continueState continues the current state, origState used for popState", function() {
+  test("ephemeralState starts a non-attached state", function() {
     var origState = new Callback(),
-        continueState = new Callback();
+        ephemeralState = new Callback();
 
     // origState will be used for popState
-    stateMachine.gotoState(origState);
+    stateMachine.startState(origState);
 
-    // a continuation of origState, ignored for popState
-    stateMachine.continueState(continueState);
+    // an ephemeral state, ignored for popState
+    stateMachine.ephemeralState(ephemeralState);
 
-    stateMachine.gotoState(new Callback());
+    stateMachine.startState(new Callback());
 
     // goes back to origState
     stateMachine.popState();
 
     equal(origState.called, 2, "origState called twice");
-    equal(continueState.called, 1, "continueState called once");
+    equal(ephemeralState.called, 1, "ephemeralState called once");
   });
 }());
