@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 
-Stately.Class = (function() {
+(function(ns) {
   function create(constr, config) {
     var inst = new constr;
     inst.init(config);
@@ -54,7 +54,7 @@ Stately.Class = (function() {
     return subclass;
   }
 
-  return extend;
+  ns.Class = extend;
 
-}());
+}(Stately));
 
