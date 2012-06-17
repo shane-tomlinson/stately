@@ -1,2 +1,2 @@
-window.Stately = {};
+window["Stately"] = {};
 
