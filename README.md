@@ -27,13 +27,14 @@ stateMachine.gotoState(....);
 // call the replacement state with replacementOptions and replacementMomento
 stateMachine.popState();
 
+// Add a new state that will be continued
 stateMachine.gotoState(function(options, momento) { /* callback code */,
 
-// continue the current state - it is like this state does not exist for the
+// continuation of the current state - it is like this state does not exist for the
 // purposes of popState.
 stateMachine.continueState(function(options, momento) { /* callback code */, continueOptions);
 
-// go back to the replacementState
+// call the replacement state with replacementOptions and replacementMomento
 stateMachine.popState();
 ```
 
