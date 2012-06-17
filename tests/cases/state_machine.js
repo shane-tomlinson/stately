@@ -25,10 +25,9 @@
   module("shared/state_machine", {
     setup: function() {
       stateMachine = StateMachine.create();
-      stateMachine.start();
     },
     teardown: function() {
-      stateMachine.destroy();
+      stateMachine = null;
     }
   });
 

@@ -24,22 +24,6 @@
       this.subscriptions = [];
     },
 
-    start: function(options) {
-      options = options || {};
-    },
-
-    stop: function() {
-      var subscription;
-
-      while(subscription = this.subscriptions.pop()) {
-        mediator.unsubscribe(subscription);
-      }
-    },
-
-    destroy: function() {
-      this.stop();
-    },
-
     storeMomento: function(momento) {
       if (!this.currentState) throw "no current state to store momento";
 
